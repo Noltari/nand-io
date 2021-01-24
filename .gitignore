@@ -1,0 +1,8 @@
+*.bin
+*.elf
+*.extracted
+*.o
+*.hex
+*.pyc
+*.swp
+__pycache__
