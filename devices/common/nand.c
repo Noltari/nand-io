@@ -16,6 +16,18 @@ void _nand_reset(void)
 	nand_wait_rb();
 }
 
+uint8_t _nand_status(void)
+{
+	uint8_t status;
+
+	nand_cmd(NC_STATUS);
+	nand_io_in();
+	status = nand_io_read();
+	nand_io_out();
+
+	return status;
+}
+
 int nand_read_id(nand_id_tx *nand_id)
 {
 	_nand_reset();
