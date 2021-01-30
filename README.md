@@ -17,7 +17,7 @@ Usage
 -----
 
 ```bash
-python3 -m nand_io --serial-device /dev/ttyACM0 --show-info
+python3 -m nand_io --serial-device /dev/ttyACM0
 ```
 
 Serial Communication Protocol

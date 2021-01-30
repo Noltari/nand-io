@@ -52,13 +52,6 @@ def main():
     )
 
     parser.add_argument(
-        "--show-info",
-        dest="show_info",
-        action="store_true",
-        help="Show NAND info",
-    )
-
-    parser.add_argument(
         "--write",
         dest="nand_write",
         action="store",
@@ -68,32 +61,8 @@ def main():
 
     args = parser.parse_args()
 
-    error = False
-    if args.bootloader:
-        if not args.serial_device:
-            parser.print_help()
-            error = True
-    elif args.restart:
-        if not args.serial_device:
-            parser.print_help()
-            error = True
-    elif args.show_info:
-        if not args.serial_device:
-            parser.print_help()
-            error = True
-    elif args.nand_read:
-        if not args.serial_device:
-            parser.print_help()
-            error = True
-    elif args.nand_write:
-        if not args.serial_device:
-            parser.print_help()
-            error = True
-    else:
+    if not args.serial_device:
         parser.print_help()
-        error = True
-
-    if error:
         return
 
     if not args.serial_speed:
@@ -111,14 +80,14 @@ def main():
                     nand.bootloader()
                 elif args.restart:
                     nand.restart()
-                elif args.show_info:
-                    nand.show_info()
                 elif args.nand_read:
                     nand.show_info()
                     nand.read(file=args.nand_read)
                 elif args.nand_write:
                     nand.show_info()
                     nand.write(file=args.nand_write)
+                else:
+                    nand.show_info()
         nand.close()
 
 
