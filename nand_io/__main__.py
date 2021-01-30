@@ -21,6 +21,13 @@ def main():
     )
 
     parser.add_argument(
+        "--pull-up",
+        dest="pull_up",
+        action="store_true",
+        help="Enable pull-up resistors",
+    )
+
+    parser.add_argument(
         "--read",
         dest="nand_read",
         action="store",
@@ -64,14 +71,16 @@ def main():
     if not args.serial_device:
         parser.print_help()
         return
-
+    if not args.pull_up:
+        args.pull_up = False
     if not args.serial_speed:
         args.serial_speed = SERIAL_DEF_SPEED
 
     nand = NandIO(
+        logger_level=INFO,
+        pull_up=args.pull_up,
         serial_device=args.serial_device,
         serial_speed=args.serial_speed,
-        logger_level=INFO,
     )
     if nand:
         if nand.open():

@@ -13,34 +13,19 @@
 #define WDFR 3
 #endif /* WDFR */
 
-void _device_release(int full)
+void _device_release_all(void)
 {
-	if (full) {
-		EIMSK = 0;
-		PCICR = 0;
-		SPCR = 0;
-		ACSR = 0;
-		EECR = 0;
-		ADCSRA = 0;
-		TIMSK0 = 0;
-		TIMSK1 = 0;
-		TIMSK2 = 0;
-		TIMSK3 = 0;
-		UCSR1B = 0;
-	}
-
-	DDRA = 0;
-	DDRB = 0;
-	DDRC = 0;
-	DDRD = 0;
-	DDRE = 0;
-	DDRF = 0;
-	PORTA = 0;
-	PORTB = 0;
-	PORTC = 0;
-	PORTD = 0;
-	PORTE = 0;
-	PORTF = 0;
+	EIMSK = 0;
+	PCICR = 0;
+	SPCR = 0;
+	ACSR = 0;
+	EECR = 0;
+	ADCSRA = 0;
+	TIMSK0 = 0;
+	TIMSK1 = 0;
+	TIMSK2 = 0;
+	TIMSK3 = 0;
+	UCSR1B = 0;
 }
 
 void device_bootloader(void)
@@ -62,7 +47,8 @@ void device_bootloader(void)
 	_delay_ms(50);
 
 	/* Ports */
-	_device_release(1);
+	_device_release_all();
+	device_release_ports();
 
 	__asm volatile("jmp 0x1FC00");
 
@@ -93,7 +79,7 @@ void device_init(void)
 	MCUCR = BIT(JTD) | BIT(IVCE);
 	MCUCR = BIT(JTD);
 
-	_device_release(0);
+	device_release_ports();
 
 	millis_init();
 
@@ -106,11 +92,28 @@ void device_msleep(uint32_t ms)
 		_delay_ms(1);
 }
 
+void device_release_ports(void)
+{
+	DDRA = 0;
+	DDRB = 0;
+	DDRC = 0;
+	DDRD = 0;
+	DDRE = 0;
+	DDRF = 0;
+	PORTA = 0;
+	PORTB = 0;
+	PORTC = 0;
+	PORTD = 0;
+	PORTE = 0;
+	PORTF = 0;
+}
+
 void device_restart(void)
 {
 	cli();
 
-	_device_release(1);
+	_device_release_all();
+	device_release_ports();
 	_delay_ms(15);
 
 	asm volatile("jmp 0");

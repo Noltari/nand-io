@@ -16,6 +16,6 @@
 #define NC_RESET	0xFF
 
 int nand_read_id(nand_id_tx *nand_id);
-int nand_read_page(const nand_page_cfg_rx *page, uint8_t *buffer, uint32_t len, int set);
+int nand_read_page(const nand_addr_rx *page, uint8_t *buffer, uint32_t len, int set);
 
 #endif /* _NAND_H_ */

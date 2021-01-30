@@ -17,9 +17,6 @@ typedef enum {
 	CMD_PING = 0x10,
 	CMD_BOOTLOADER = 0x11,
 	CMD_RESTART = 0x12,
-	/* IO */
-	CMD_IO_LOCK = 0x20,
-	CMD_IO_RELEASE = 0x21,
 	/* NAND */
 	CMD_NAND_ID_READ = 0x30,
 	CMD_NAND_ID_CONFIG = 0x31,
@@ -47,6 +44,18 @@ typedef struct {
 	uint8_t error;
 } PACKED error_tx;
 
+#define NAND_ADDR_SIZE 5
+typedef struct {
+	uint8_t addr[NAND_ADDR_SIZE];
+	uint8_t addr_len;
+} PACKED nand_addr_rx;
+
+typedef struct {
+	uint32_t raw_page_size;
+	uint32_t read_delay_us;
+	uint8_t pull_up;
+} PACKED nand_cfg_rx;
+
 typedef struct {
 	uint8_t mf_id;
 	uint8_t dev_id;
@@ -54,29 +63,6 @@ typedef struct {
 	uint8_t size_data;
 	uint8_t plane_data;
 } PACKED nand_id_tx;
-
-typedef struct {
-	uint32_t block_size;
-	uint32_t pages;
-	uint32_t page_size;
-	uint32_t plane_size;
-	uint32_t raw_block_size;
-	uint32_t raw_page_size;
-	uint32_t raw_size;
-	uint32_t size;
-	uint16_t blocks;
-	uint16_t block_pages;
-	uint16_t oob_size;
-	uint8_t bus_width;
-	uint8_t planes;
-} PACKED nand_cfg_rx;
-
-#define NAND_ADDR_SIZE 5
-typedef struct {
-	uint8_t addr[NAND_ADDR_SIZE];
-	uint8_t addr_len;
-	uint32_t delay_us;
-} PACKED nand_page_cfg_rx;
 
 typedef struct {
 	uint8_t device;

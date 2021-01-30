@@ -37,10 +37,12 @@ class NandIO:
         serial_device,
         logger_level=INFO,
         logger_stream=sys.stdout,
+        pull_up=False,
         serial_speed=SERIAL_DEF_SPEED,
     ):
         """Init NAND IO."""
         self.log = Logger(level=logger_level, stream=logger_stream)
+        self.pull_up = pull_up
         self.serial_device = serial_device
         self.serial_speed = serial_speed
         self.serial = None
@@ -246,7 +248,7 @@ class NandIO:
         if nand_id is None:
             return False
 
-        self.nand = Nand(self.log)
+        self.nand = Nand(self.log, self.pull_up)
         self.nand.identify(nand_id)
         self.pkt_tx(CMD_NAND_ID_CONFIG, self.nand.config_bytes())
 

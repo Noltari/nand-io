@@ -5,6 +5,8 @@
 #include "nand.h"
 #include "protocol.h"
 
+extern nand_cfg_rx NAND;
+
 void _nand_reset(void)
 {
 	nand_enable();
@@ -36,13 +38,11 @@ int nand_read_id(nand_id_tx *nand_id)
 	return 0;
 }
 
-int nand_read_page(const nand_page_cfg_rx *page, uint8_t *buffer, uint32_t len, int set)
+int nand_read_page(const nand_addr_rx *page, uint8_t *buffer, uint32_t len, int set)
 {
 	uint32_t offset;
 
 	if (set) {
-		const uint32_t delay = le32toh(page->delay_us);
-
 		nand_enable();
 
 		nand_cmd(NC_READ1);
@@ -52,8 +52,8 @@ int nand_read_page(const nand_page_cfg_rx *page, uint8_t *buffer, uint32_t len, 
 			nand_io_set(page->addr[offset]);
 		nand_ale_low();
 
-		if (delay)
-			device_usleep(delay);
+		if (NAND.read_delay_us)
+			device_usleep(NAND.read_delay_us);
 		else
 			nand_cmd(NC_READ2);
 

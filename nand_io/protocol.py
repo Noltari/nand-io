@@ -7,9 +7,6 @@ import ctypes
 CMD_PING = 0x10
 CMD_BOOTLOADER = 0x11
 CMD_RESTART = 0x12
-# IO
-CMD_IO_LOCK = 0x20
-CMD_IO_RELEASE = 0x21
 # NAND
 CMD_NAND_ID_READ = 0x30
 CMD_NAND_ID_CONFIG = 0x31
@@ -101,24 +98,24 @@ class IORestartRX(ctypes.LittleEndianStructure):
     ]
 
 
+class IONandAddressTX(ctypes.LittleEndianStructure):
+    """NAND configuration (request)."""
+
+    _pack_ = 1
+    _fields_ = [
+        ("addr", ctypes.c_uint8 * PAGE_ADDR_SIZE),
+        ("addr_len", ctypes.c_uint8),
+    ]
+
+
 class IONandConfigRX(ctypes.LittleEndianStructure):
     """NAND configuration (request)."""
 
     _pack_ = 1
     _fields_ = [
-        ("block_size", ctypes.c_uint32),
-        ("pages", ctypes.c_uint32),
-        ("page_size", ctypes.c_uint32),
-        ("plane_size", ctypes.c_uint32),
-        ("raw_block_size", ctypes.c_uint32),
         ("raw_page_size", ctypes.c_uint32),
-        ("raw_size", ctypes.c_uint32),
-        ("size", ctypes.c_uint32),
-        ("blocks", ctypes.c_uint16),
-        ("block_pages", ctypes.c_uint16),
-        ("oob_size", ctypes.c_uint16),
-        ("bus_width", ctypes.c_uint8),
-        ("planes", ctypes.c_uint8),
+        ("read_delay_us", ctypes.c_uint32),
+        ("pull_up", ctypes.c_uint8),
     ]
 
 
@@ -132,15 +129,4 @@ class IONandIdRX(ctypes.LittleEndianStructure):
         ("chip_data", ctypes.c_uint8),
         ("size_data", ctypes.c_uint8),
         ("plane_data", ctypes.c_uint8),
-    ]
-
-
-class IONandPageConfigTX(ctypes.LittleEndianStructure):
-    """NAND configuration (request)."""
-
-    _pack_ = 1
-    _fields_ = [
-        ("addr", ctypes.c_uint8 * PAGE_ADDR_SIZE),
-        ("addr_len", ctypes.c_uint8),
-        ("delay_us", ctypes.c_uint32),
     ]

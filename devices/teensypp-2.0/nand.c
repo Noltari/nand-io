@@ -36,8 +36,6 @@
 
 #define RB_TOUT_MS	3000
 
-uint8_t nand_pullups = 0;
-
 extern nand_cfg_rx NAND;
 
 void nand_ale_high(void)
@@ -67,7 +65,10 @@ void nand_cmd(uint8_t cmd)
 void nand_io_in(void)
 {
 	DDR_IO = 0;
-	PORT_IO = nand_pullups;
+	if (NAND.pull_up)
+		PORT_IO = 0xFF;
+	else
+		PORT_IO = 0;
 }
 
 void nand_io_out(void)

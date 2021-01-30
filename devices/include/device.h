@@ -11,8 +11,9 @@ uint32_t device_freeram(void);
 uint8_t device_id(void);
 void device_init(void);
 void device_msleep(uint32_t ms);
-void device_usleep(uint32_t us);
 void device_restart(void);
+void device_release_ports(void);
+void device_usleep(uint32_t us);
 
 int serial_available(void);
 int serial_busy(void);

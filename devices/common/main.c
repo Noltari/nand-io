@@ -141,19 +141,9 @@ int cmd_nand_id_read(pkt_hdr_t *rx_hdr)
 
 	pkt_res = pkt_receive(&tx_hdr, &nc, sizeof(nc));
 	if (pkt_res == PKT_OK && tx_hdr.cmd == CMD_NAND_ID_CONFIG) {
-		NAND.block_size = le32toh(nc.block_size);
-		NAND.pages = le32toh(nc.pages);
-		NAND.page_size = le32toh(nc.page_size);
-		NAND.plane_size = le32toh(nc.plane_size);
-		NAND.raw_block_size = le32toh(nc.raw_block_size);
 		NAND.raw_page_size = le32toh(nc.raw_page_size);
-		NAND.raw_size = le32toh(nc.raw_size);
-		NAND.size = le32toh(nc.size);
-		NAND.blocks = le16toh(nc.blocks);
-		NAND.block_pages = le16toh(nc.block_pages);
-		NAND.oob_size = le16toh(nc.oob_size);
-		NAND.bus_width = nc.bus_width;
-		NAND.planes = nc.planes;
+		NAND.read_delay_us = le32toh(nc.read_delay_us);
+		NAND.pull_up = nc.pull_up;
 	}
 
 	return CMD_OK;
@@ -161,7 +151,7 @@ int cmd_nand_id_read(pkt_hdr_t *rx_hdr)
 
 int cmd_nand_page_read(pkt_hdr_t *rx_hdr)
 {
-	nand_page_cfg_rx page;
+	nand_addr_rx page;
 	uint8_t buffer[IO_BUFFER_SIZE];
 	uint32_t len = 0;
 	uint32_t crc = CRC32_START;
@@ -229,9 +219,11 @@ void cmd_process(pkt_hdr_t *pkt_hdr)
 			break;
 		case CMD_NAND_ID_READ:
 			res = cmd_nand_id_read(pkt_hdr);
+			device_release_ports();
 			break;
 		case CMD_NAND_PAGE_READ:
 			res = cmd_nand_page_read(pkt_hdr);
+			device_release_ports();
 			break;
 		case CMD_PING:
 			res = cmd_ping(pkt_hdr);

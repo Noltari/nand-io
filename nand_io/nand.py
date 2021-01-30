@@ -36,7 +36,7 @@ from .const import (
     NM_PLANES_SHIFT,
     NM_READ_DELAY_US,
 )
-from .protocol import IONandConfigRX, IONandPageConfigTX
+from .protocol import IONandAddressTX, IONandConfigRX
 
 
 class Nand:
@@ -45,9 +45,11 @@ class Nand:
     def __init__(
         self,
         log,
+        pull_up=False,
     ):
         """Init NAND device."""
         self.log = log
+        self.pull_up = pull_up
 
         self.block_pages = 0
         self.block_size = 0
@@ -74,19 +76,9 @@ class Nand:
     def config_ctypes(self):
         """NAND Config in ctypes format."""
         return IONandConfigRX(
-            block_size=self.block_size,
-            pages=self.pages,
-            page_size=self.page_size,
-            plane_size=self.plane_size,
-            raw_block_size=self.raw_block_size,
             raw_page_size=self.raw_page_size,
-            raw_size=self.raw_size,
-            size=self.size,
-            blocks=self.blocks,
-            block_pages=self.block_pages,
-            oob_size=self.oob_size,
-            bus_width=self.bus_width,
-            planes=self.planes,
+            read_delay_us=self.read_delay_us,
+            pull_up=self.pull_up,
         )
 
     def identify(self, nand_id):
@@ -208,7 +200,7 @@ class Nand:
 
     def page_config_ctypes(self, page):
         """Page Config in ctypes format."""
-        page_config = IONandPageConfigTX()
+        page_config = IONandAddressTX()
         if self.page_addr_type == NAND_PAGE_ADDR_3B:
             page_config.addr[0] = 0
             page_config.addr[1] = page & 0xFF
@@ -227,5 +219,4 @@ class Nand:
             page_config.addr[3] = (page >> 8) & 0xFF
             page_config.addr[4] = (page >> 16) & 0xFF
             page_config.addr_len = 5
-        page_config.delay_us = self.read_delay_us
         return page_config

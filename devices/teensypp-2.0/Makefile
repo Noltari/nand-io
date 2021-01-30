@@ -32,6 +32,6 @@ teensy.elf: device.o millis.o nand.o serial.o \
 all: teensy.hex
 
 clean:
-	$(RM) *.elf *.hex *.o all
+	$(RM) *.elf *.hex *.o ../common/*.o all
 
 .DEFAULT_GOAL := all
