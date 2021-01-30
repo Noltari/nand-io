@@ -19,8 +19,12 @@ teensy_loader_cli -v --mcu=at90usb1286 -w teensy.hex
 Teensy-NAND connection
 ----------------------
 
+__Warning:__ Teensy++ 2.0 VCC pin can't be used to power 3.3V NANDs unless it has been [converted to run at 3.3V with an external regulator](https://www.pjrc.com/teensy/3volt.html).
+
 | Teensy Pin     | NAND Pin |
 |:--------------:|:--------:|
+| 3.3V           | VCC      |
+| GND            | GND      |
 | A0 A1 A2 A3 A4 | RE       |
 | B0 B1 B2 B3 B4 | CLE      |
 | C0 C1 C2 C3 C4 | WE       |
