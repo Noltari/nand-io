@@ -26,6 +26,8 @@ typedef enum {
 
 nand_cfg_rx NAND;
 
+static uint8_t BUFFER[IO_BUFFER_SIZE];
+
 pkt_res_t data_receive(pkt_hdr_t *pkt_hdr, void* data, uint32_t data_len)
 {
 	uint32_t rx_crc = 0;
@@ -152,7 +154,6 @@ int cmd_nand_id_read(pkt_hdr_t *rx_hdr)
 int cmd_nand_page_read(pkt_hdr_t *rx_hdr)
 {
 	nand_addr_rx page;
-	uint8_t buffer[IO_BUFFER_SIZE];
 	uint32_t len = 0;
 	uint32_t crc = CRC32_START;
 
@@ -164,13 +165,14 @@ int cmd_nand_page_read(pkt_hdr_t *rx_hdr)
 	while (len < NAND.raw_page_size) {
 		uint32_t cur_len = MIN(IO_BUFFER_SIZE, NAND.raw_page_size);
 
-		nand_read_page(&page, buffer, cur_len, len == 0);
-		crc = crc32(crc, buffer, cur_len);
-		serial_write(buffer, cur_len);
+		nand_read_page(&page, BUFFER, cur_len, len == 0);
+		crc = crc32(crc, BUFFER, cur_len);
+		serial_write(BUFFER, cur_len);
 
 		len += cur_len;
 	}
 	serial_write(&crc, DATA_CRC_LEN);
+	serial_flush_output();
 
 	return CMD_OK;
 }
@@ -245,19 +247,22 @@ int main(void)
 	device_init();
 
 	while (1) {
-		serial_flush_input();
+		pkt_hdr_t pkt_hdr;
+		pkt_res_t pkt_res;
 
-		while (!serial_busy()) {
-			if (serial_available()) {
-				pkt_hdr_t pkt_hdr;
-				pkt_res_t pkt_res = pkt_receive(&pkt_hdr, NULL, 0);
+		while (serial_busy())
+			NOP();
 
-				if (pkt_res == PKT_OK)
-					cmd_process(&pkt_hdr);
-				else
-					cmd_error(CMD_ERROR_TRANSFER);
-			}
-		}
+		while (!serial_available())
+			NOP();
+
+		pkt_res = pkt_receive(&pkt_hdr, NULL, 0);
+		if (pkt_res == PKT_OK) {
+			cmd_process(&pkt_hdr);
+		} else {
+			serial_flush_input();
+			cmd_error(CMD_ERROR_TRANSFER);
+ 		}
 	}
 
 	return 0;

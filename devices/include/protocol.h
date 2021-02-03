@@ -10,6 +10,7 @@
 typedef enum {
 	DEV_UNKNOWN = 0,
 	DEV_TEENSYPP2 = 1,
+	DEV_RPI_PICO = 2,
 } dev_id_t;
 
 typedef enum {

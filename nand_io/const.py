@@ -106,4 +106,5 @@ SERIAL_DEF_SPEED = 9600
 SERIAL_DEF_TIMEOUT = 1
 SERIAL_DEVICES = {
     1: "Teensy++ 2.0",
+    2: "Raspberry Pi Pico",
 }

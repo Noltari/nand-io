@@ -159,3 +159,29 @@ jobs:
           name: teensy.hex
           path: devices/teensypp-2.0/teensy.hex
           retention-days: 5
+
+  pico:
+    name: RPi Pico compilation
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code from GitHub
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi
+
+      - name: Git submodules
+        run: |
+          git submodule update --init --recursive
+
+      - name: Generate RPi Pico binaries
+        run: |
+          cd devices/rpi-pico && ./build.sh
+
+      - name: 'Upload RPi Pico binary'
+        uses: actions/upload-artifact@v2
+        with:
+          name: pico-nand-io.uf2
+          path: devices/rpi-pico/build/nand_io.uf2
+          retention-days: 5
