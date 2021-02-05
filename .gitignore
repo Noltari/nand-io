@@ -1,8 +1,10 @@
 *.bin
 *.elf
 *.extracted
-*.o
 *.hex
+*.o
+*.patch
 *.pyc
 *.swp
+.vscode
 __pycache__
