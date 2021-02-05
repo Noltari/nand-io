@@ -676,7 +676,7 @@ uint32_t serial_get_baud(void)
 	return *baud;
 }
 
-size_t serial_read(void *ptr, size_t length)
+size_t serial_read(void *ptr, size_t size)
 {
 	uint8_t *buffer = (uint8_t *) ptr;
 	size_t count = 0;
@@ -686,15 +686,15 @@ size_t serial_read(void *ptr, size_t length)
 	uint8_t intr_state;
 
 	read_ms = millis();
-	if (length <= 0)
+	if (size <= 0)
 		return 0;
 
 	if (peek_buf >= 0) {
 		*buffer++ = peek_buf;
 		peek_buf = -1;
 
-		length--;
-		if (length == 0)
+		size--;
+		if (size == 0)
 			return 1;
 
 		count = 1;
@@ -717,8 +717,8 @@ size_t serial_read(void *ptr, size_t length)
 		}
 
 		num = UEBCLX;
-		if (num > length)
-			num = length;
+		if (num > size)
+			num = size;
 
 		for (i = 0; i < num; i++)
 			*buffer++ = UEDATX;
@@ -728,8 +728,8 @@ size_t serial_read(void *ptr, size_t length)
 		SREG = intr_state;
 
 		count += num;
-		length -= num;
-		if (length == 0)
+		size -= num;
+		if (size == 0)
 			return count;
 	} while (millis() - read_ms < SERIAL_TIMEOUT_MS);
 

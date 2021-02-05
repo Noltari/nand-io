@@ -20,7 +20,7 @@ int serial_busy(void);
 void serial_flush_input(void);
 void serial_flush_output(void);
 uint32_t serial_get_baud(void);
-size_t serial_read(void *ptr, size_t length);
+size_t serial_read(void *ptr, size_t size);
 size_t serial_write(const void *ptr, size_t size);
 
 void nand_ale_high(void);
