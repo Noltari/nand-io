@@ -34,8 +34,6 @@
 #define PIN_IO		PINF
 #define PORT_IO		PORTF
 
-#define RB_TOUT_MS	3000
-
 extern nand_cfg_rx NAND;
 
 void nand_ale_high(void)
