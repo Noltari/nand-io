@@ -26,6 +26,7 @@ size_t serial_write(const void *ptr, size_t size);
 void nand_ale_high(void);
 void nand_ale_low(void);
 void nand_cmd(uint8_t cmd);
+void nand_disable(void);
 void nand_enable(void);
 void nand_io_in(void);
 void nand_io_out(void);

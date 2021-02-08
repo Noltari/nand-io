@@ -92,6 +92,11 @@ void nand_io_set(uint8_t data)
 	nand_we();
 }
 
+void nand_disable(void)
+{
+	/* TODO: add CE# */
+}
+
 void nand_enable(void)
 {
 	DDR_RB_WP = 0xFF;
